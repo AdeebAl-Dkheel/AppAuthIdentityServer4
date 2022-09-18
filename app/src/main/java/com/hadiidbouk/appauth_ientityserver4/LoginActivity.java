@@ -3,9 +3,10 @@ package com.hadiidbouk.appauth_ientityserver4;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import net.openid.appauth.AuthorizationRequest;
 import net.openid.appauth.AuthorizationService;
@@ -42,7 +43,18 @@ public class LoginActivity extends AppCompatActivity {
 		AuthorizationRequest authRequest = authRequestBuilder.build();
 
 		Intent authIntent = new Intent(this, LoginAuthActivity.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, authRequest.hashCode(), authIntent, 0);
+
+		PendingIntent pendingIntent = null;
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+			pendingIntent = PendingIntent.getActivity
+					(this, authRequest.hashCode(), authIntent, PendingIntent.FLAG_MUTABLE);
+		}
+		else
+		{
+			pendingIntent = PendingIntent.getActivity
+					(this, authRequest.hashCode(), authIntent, PendingIntent.FLAG_ONE_SHOT);
+		}
+		//PendingIntent pendingIntent = PendingIntent.getActivity(this, authRequest.hashCode(), authIntent, 0);
 
 		authService.performAuthorizationRequest(
 			authRequest,
